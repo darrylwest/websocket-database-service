@@ -23,8 +23,8 @@ var errorHandler = function(err) {
 };
 
 var paths = {
-    src: 'lib/*.js',
-    tests: 'test/*.js'
+    src: 'lib/*/*.js',
+    tests: 'test/*/*.js'
 };
 
 gulp.task('jshint', function() {
