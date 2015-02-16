@@ -1,7 +1,12 @@
 {
     "port":29171,
-    "hubName":"/MessageHub",
+    "hubName":"/DatabaseMessageHub",
     "channels":[ "/database" ],
-    "appkey":"21c47d42-b190-11e4-b245-6bec9d4533f0"
+    "appkey":"21c47d42-b190-11e4-b245-6bec9d4533f0",
+    "logging":{
+        "logDirectory":"HOME/logs",
+        "fileNamePattern":"ws-db-<DATE>.log",
+        "dateFormat":"YYYY.MM.DD"
+    }
 }
 

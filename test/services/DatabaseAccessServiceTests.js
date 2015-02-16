@@ -6,6 +6,7 @@
  */
 var should = require('chai').should(),
     dash = require('lodash'),
+    uuid = require('node-uuid' ),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
     MessageHub = require('node-messaging-commons'),
     DatabaseAccessService = require('../../lib/services/DatabaseAccessService');
@@ -29,7 +30,7 @@ describe('DatabaseAccessService', function() {
         opts.log = MockLogger.createLogger('DatabaseAccessService');
         opts.hub = createMessageHub();
 
-        opts.id = 'myid';
+        opts.id = uuid.v4();
 
         return opts;
     };

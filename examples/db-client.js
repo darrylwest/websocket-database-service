@@ -6,6 +6,7 @@
 
 var dash = require('lodash'),
     uuid = require('node-uuid' ),
+    randomData = require('random-fixture-data' ),
     config = require( __dirname + '/../config.json' ),
     DatabaseAccessService = require( __dirname + '/../index' ),
     MessageHub = require( 'node-messaging-commons' ),
@@ -14,8 +15,9 @@ var dash = require('lodash'),
     producer;
 
 var openDatabaseChannel = function() {
-    var id = uuid.v4(),
-        request = {};
+    var ssid = uuid.v4(),
+        request = {},
+        rid = 1;
 
     request.action = 'openPrivateChannel';
     request.privateChannel = '/test-' + (dash.random( 1000000 ) + 1000000).toString(19);
@@ -25,21 +27,25 @@ var openDatabaseChannel = function() {
     consumer.publish( request, config.appkey );
 
     process.nextTick(function() {
-        console.log('create the producer: ', request.privateChannel);
-        producer = hub.createProducer( request.privateChannel, id );
+        console.log('create the producer: ', request.privateChannel, ', session: ', ssid);
+        producer = hub.createProducer( request.privateChannel, ssid );
 
         producer.onMessage(function(msg) {
-            console.log('received: ', msg);
+            if (msg.ssid !== ssid) {
+                console.log('received: ', JSON.stringify( msg ));
+            }
         });
 
         setInterval(function() {
-            var msg = {
-                "set":[ "mykey", dash.random( 1000 ).toString() ]
-            };
+            var id = dash.random( 10000 ).toString(),
+                msg = {
+                    "rid":rid++,
+                    "cmd":[ "set", "mykey", { id:id, name:randomData.name, zip:randomData.zip } ]
+                };
 
-            console.log('send message: ', msg);
+            console.log('send message: ', JSON.stringify( msg ));
 
-            producer.publish( msg, id );
+            producer.publish( msg, ssid );
         }, 2500);
     });
 };

@@ -24,15 +24,12 @@
     "maxstatements": 20,
     "maxcomplexity": 10,
     "white": false,
-    "curly": false,
+    "curly": true,
     "globals": {
-        "RemoteLogger":true,
-        "AbstractMessageClient":true,
-        "Faye":true,
-        "SpellCheckClient":true,
         "describe":true,
         "should":true,
         "it":true,
+        "before":true,
         "beforeEach":true
     }
 }

@@ -14,7 +14,7 @@ The Websocket Database Service...
 ### Server
 
 ~~~
-	npm install websocket-database-service --save
+    npm install websocket-database-service --save
 ~~~
 
 ### Client/Browser
@@ -42,11 +42,11 @@ Here is a short snippet of the browser code:
 
 ### Server
 
-The project includes a "bin" folder with a run/start/stop and status scripts.  The run script is the same as start, but it runs in the forgound.  It looks something like this:
+The project includes a "bin" folder with a run/start/stop and status scripts.  The run script is the same as start, but it runs in the foregound.  It looks something like this:
 
 ~~~
-	var config = require('./config.json'),
-    	DatabaseService = require('websocket-database-service'),
+    var config = require('./config.json'),
+        DatabaseService = require('websocket-database-service'),
         service = DatabaseService.createInstance( config );
 
     service.start();
@@ -65,7 +65,7 @@ Here is a sample configuration file.
 }
 ~~~
 
-You would want to have a proxy and preferrably HTTPS in front of this but port 29171 works for development.
+You would want to have a proxy and preferably HTTPS in front of this but port 29171 works for development.
 
 ~~~
 
@@ -81,9 +81,9 @@ Unit tests include should/specs, jshint and validate-package.  Tests can be run 
 
     make watch
 
-	or
-	
-	npm test
+    or
+
+    npm test
 ~~~
 
 - - -
