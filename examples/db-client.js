@@ -16,12 +16,12 @@ var dash = require('lodash'),
     MessageHub = require( 'node-messaging-commons' ),
     hub = MessageHub.createInstance( config ),
     consumer = hub.createConsumer( DatabaseAccessService.DEFAULT_CHANNEL ),
-    privateChannel = '/test-' + (dash.random( 1000000 ) + 1000000).toString( 19 ),
-    producer;
+    privateChannel = '/test-' + (dash.random( 1000000 ) + 1000000).toString( 19 );
 
 var sendCommands = function() {
 
     var ssid = uuid.v4(),
+        producer,
         commandList = createCommandList(),
         thread,
         rid = 1;
@@ -32,19 +32,26 @@ var sendCommands = function() {
     producer.onMessage(function(msg) {
         if (msg.ssid !== ssid) {
             console.log('received: ', JSON.stringify( msg ));
+
+            if (msg.message.status === 'ok') {
+                setTimeout(function() {
+                    next();
+                }, 50);
+            }
         }
     });
 
-    thread = setInterval(function() {
+    var next = function() {
         var command = commandList.shift(),
             msg = {
-                "rid":rid++,
+                "rid":[ Date.now(), rid++ ].join('-'),
                 "cmd":command
             };
 
         if (command) {
             console.log('send message: ', JSON.stringify( msg ));
 
+            // send and wait
             producer.publish( msg, ssid );
         } else {
             clearInterval( thread );
@@ -57,7 +64,9 @@ var sendCommands = function() {
                 process.kill( process.pid );
             });
         }
-    }, 1000);
+    };
+
+    next();
 
 };
 
@@ -106,7 +115,8 @@ consumer.onMessage(function(msg) {
         console.log( 'consumer>> ', JSON.stringify( msg ));
 
         // check message to verify that the private channel was accepted
-        if (true) {
+        if (msg.message.channelAccepted === privateChannel) {
+            console.log('channel accepted, start the commands...');
             sendCommands();
         }
     }
