@@ -23,7 +23,7 @@ var sendCommands = function() {
     var ssid = uuid.v4(),
         producer,
         commandList = createCommandList(),
-        thread,
+        responseList = [],
         rid = 1;
 
     console.log('create the producer: ', privateChannel, ', session: ', ssid);
@@ -33,10 +33,16 @@ var sendCommands = function() {
         if (msg.ssid !== ssid) {
             console.log('received: ', JSON.stringify( msg ));
 
-            if (msg.message.status === 'ok') {
-                setTimeout(function() {
-                    next();
-                }, 50);
+            if (msg.message.status === 'ok' && msg.message.rid) {
+                var r = dash.remove( responseList, function(id) {
+                    return id === msg.message.rid;
+                });
+
+                if ( r.length === 1 ) {
+                    setTimeout(function() {
+                        next();
+                    }, 50);
+                }
             }
         }
     });
@@ -52,11 +58,9 @@ var sendCommands = function() {
             console.log('send message: ', JSON.stringify( msg ));
 
             // send and wait
+            responseList.push( msg.rid );
             producer.publish( msg, ssid );
         } else {
-            clearInterval( thread );
-            thread = null;
-
             producer.close();
             consumer.close();
 
@@ -67,7 +71,6 @@ var sendCommands = function() {
     };
 
     next();
-
 };
 
 var openDatabaseChannel = function() {
