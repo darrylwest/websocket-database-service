@@ -60,7 +60,7 @@ var openDatabaseChannel = function() {
 
                 producer.close();
                 consumer.close();
-                
+
                 process.nextTick(function() {
                     process.kill( process.pid );
                 });
@@ -94,10 +94,10 @@ var createCommandList = function() {
 
 consumer.onConnect(function(chan) {
     console.log('c>> connected to database service: ', chan);
+    openDatabaseChannel();
 });
 
 consumer.onMessage(function(msg) {
     console.log( msg );
 });
 
-openDatabaseChannel();
