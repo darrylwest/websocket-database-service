@@ -17,7 +17,7 @@ describe('DatabaseAccessService', function() {
     var createMessageHub = function() {
         var opts = {};
 
-        opts.log = MockLogger.createLogger('MessageHub');
+        opts.log = MockLogger.createLogger('DatabaseAccessService');
         opts.port = 12345;
         opts.hubName = 'DatabaseAccessHub';
 
