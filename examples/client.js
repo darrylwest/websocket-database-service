@@ -20,33 +20,58 @@ var Client = function(options) {
     var client = this,
         log = options.log,
         databaseClient = options.databaseClient,
-        commandList = options.commandList;
+        commandList = options.commandList,
+        responseList = [];
 
     this.initListeners = function() {
         databaseClient.on(DatabaseClient.PRIVATE_CHANNEL_ACCEPTED, function(channel) {
             log.info( 'private channel ready: ', channel);
         });
+
+        databaseClient.on(DatabaseClient.PRIVATE_CHANNEL_CONNECTED, function(channel, key) {
+            log.info('private channel connected: ', channel, ', key: ', key);
+
+            // start sending commands
+            setTimeout( client.nextCommand, 500 );
+        });
+
+        databaseClient.on(DatabaseClient.PRIVATE_MESSAGE_RECEIVED, function(msg) {
+            log.info('private message received: ', msg);
+
+            var rid = msg.message.rid;
+
+            var request = dash.find( responseList, function(req) {
+                return req.id === rid;
+            });
+
+            if (request) {
+                request.received = Date.now();
+                log.info( JSON.stringify( request ));
+
+                dash.remove( responseList, function(req) {
+                    return req.id === rid;
+                });
+
+                dash.defer( client.nextCommand );
+            }
+        });
     };
 
     this.run = function() {
-        log.info('client started...');
+        log.info('run the client...');
 
         databaseClient.openDatabaseChannel();
     };
 
     this.nextCommand = function() {
-        var command = commandList.shift(),
-            msg = {
-                "rid":[ Date.now(), rid++ ].join('-'),
-                "cmd":command
-            };
+        var command = commandList.shift();
 
         if (command) {
-            log.info('send message: ', JSON.stringify( msg ));
+            log.info('send message: ', JSON.stringify( command ));
 
-            // send and wait
-            // responseList.push( msg.rid );
-            // producer.publish( msg, ssid );
+            responseList.push( command );
+
+            databaseClient.sendDatabaseCommand( command );
         } else {
             process.nextTick(function() {
                 process.kill( process.pid );
@@ -66,7 +91,8 @@ Client.createInstance = function() {
 
     var createCommandList = function() {
         var randomData = require('random-fixture-data' ),
-            list = [];
+            list = [],
+            request;
 
         var createRandomUserRecord = function() {
             var obj = {};
@@ -80,10 +106,18 @@ Client.createInstance = function() {
 
         while (list.length < 4) {
             var user = createRandomUserRecord();
-            list.push( [ "set", "TestUser:" + user.id, user ] );
+
+            request = new DatabaseRequest( { cmd:[ "set", "TestUser:" + user.id, user ] } );
+
+            list.push( request );
         }
 
-        list.push( [ "keys", "TestUser:*" ]);
+        request = new DatabaseRequest( { cmd:[ "keys", "TestUser:*" ] } );
+        request.responseHandler = function(msg) {
+            console.dir( msg );
+        };
+
+        list.push( request );
 
         return list;
     };
@@ -95,6 +129,8 @@ Client.createInstance = function() {
         opts.createLogger = logManager.createLogger;
         opts.messageURL = [ host, config.hubName ].join('');
         opts.publicKey = config.appkey;
+
+        opts.algorithm = 'sha256';
 
         opts.log.info('client instance ops: ', opts);
 

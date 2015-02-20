@@ -35,6 +35,7 @@ describe('DatabaseClient', function() {
                 'openDatabaseChannel',
                 'publicConnectHandler',
                 'publicMessageHandler',
+                'sendDatabaseCommand',
                 // inherited
                 'addListener',
                 'emit',
