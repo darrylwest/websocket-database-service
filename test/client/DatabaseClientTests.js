@@ -29,6 +29,9 @@ describe('DatabaseClient', function() {
             methods = [
                 'createHub',
                 'openPrivateChannel',
+                'privateConnectHandler',
+                'privateMessageHandler',
+                'requestPrivateChannel',
                 'openDatabaseChannel',
                 'publicConnectHandler',
                 'publicMessageHandler',

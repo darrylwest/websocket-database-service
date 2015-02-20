@@ -27,7 +27,7 @@
     "node-messaging-commons": "^0.90.40",
     "node-uuid": "^1.4.1",
     "redis": "^0.12.1",
-    "simple-node-logger": "^0.92.16"
+    "simple-node-logger": "^0.92.17"
   },
   "devDependencies": {
     "mocha": "^2.1.0",

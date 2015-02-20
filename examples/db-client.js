@@ -81,7 +81,7 @@ var openDatabaseChannel = function() {
 
     console.log('create the database channel: ', request);
 
-    consumer.publish( request, config.appkey );
+    consumer.publish( request );
 };
 
 var createCommandList = function() {
