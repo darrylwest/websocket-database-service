@@ -53,7 +53,8 @@ describe('DatabaseAccessService', function() {
                 'start',
                 'createProducer',
                 'shutdown',
-                'messageHandler'
+                'messageHandler',
+                'commandMessageHandler'
             ];
 
         it('should create an instance of DatabaseAccessService', function() {
@@ -77,5 +78,9 @@ describe('DatabaseAccessService', function() {
 
     describe('messageHandler', function() {
         it('should handle a known message type');
+    });
+
+    describe('commandMessageHandler', function() {
+        it('should process a valid command and return a valid result');
     });
 });
