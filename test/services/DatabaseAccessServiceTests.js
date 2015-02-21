@@ -7,12 +7,23 @@
 var should = require('chai').should(),
     dash = require('lodash'),
     uuid = require('node-uuid' ),
+    RedisDao = require('../../lib/dao/RedisDao' ),
+    MockRedis = require( 'mock-redis-client' ),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
     MessageHub = require('node-messaging-commons'),
     DatabaseAccessService = require('../../lib/services/DatabaseAccessService');
 
 describe('DatabaseAccessService', function() {
     'use strict';
+
+    var createMockDao = function() {
+        var opts = {};
+
+        opts.log = MockLogger.createLogger('RedisDao');
+        opts.redis = MockRedis.createMockRedis();
+
+        return new RedisDao( opts );
+    };
 
     var createMessageHub = function() {
         var opts = {};
@@ -29,6 +40,7 @@ describe('DatabaseAccessService', function() {
 
         opts.log = MockLogger.createLogger('DatabaseAccessService');
         opts.hub = createMessageHub();
+        opts.dao = createMockDao();
 
         opts.id = uuid.v4();
 
