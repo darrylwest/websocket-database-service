@@ -86,7 +86,6 @@ type key
 scan cursor [MATH pattern] [COUNT count]
 ~~~
 
-
 ### Strings
 ~~~
 set key value
@@ -130,6 +129,15 @@ Noticeable exclusions are auth, quit and select.  These commands should be done 
 ~~~
 echo message
 ping
+~~~
+
+### Server
+
+A very small subset of server commands are supported...
+
+~~~
+dbsize
+time
 ~~~
 
 ## Tests
