@@ -20,8 +20,7 @@ var Client = function(options) {
     var client = this,
         log = options.log,
         databaseClient = options.databaseClient,
-        commandList = options.commandList,
-        responseList = [];
+        commandList = options.commandList;
 
     this.initListeners = function() {
         databaseClient.on(DatabaseClient.PRIVATE_CHANNEL_ACCEPTED, function(channel) {
@@ -36,31 +35,19 @@ var Client = function(options) {
         });
 
         databaseClient.on(DatabaseClient.PRIVATE_MESSAGE_RECEIVED, function(msg) {
-            log.info('private message received: ', msg);
+            log.debug('private message received: ', msg);
+        });
 
-            var rid = msg.message.rid;
+        databaseClient.on(DatabaseClient.PRIVATE_RESPONSE_RECEIVED, function(request) {
+            log.info('response received: ', request);
 
-            var request = dash.find( responseList, function(req) {
-                return req.id === rid;
-            });
+            // validate the response
 
-            if (request) {
-                request.received = Date.now();
-                request.response = msg;
-
-                log.info( JSON.stringify( request ));
-
-                dash.remove( responseList, function(req) {
-                    return req.id === rid;
-                });
-
-                dash.defer(function() {
-                    client.nextCommand();
-                    if (typeof request.responseHandler === 'function') {
-                        request.responseHandler( msg );
-                    }
-                });
+            if (request.response.status !== 'ok') {
+                log.error('error in response: ', request.response);
             }
+
+            dash.defer( client.nextCommand );
         });
     };
 
@@ -75,8 +62,6 @@ var Client = function(options) {
 
         if (command) {
             log.info('send message: ', JSON.stringify( command ));
-
-            responseList.push( command );
 
             databaseClient.sendDatabaseCommand( command );
         } else {
@@ -98,8 +83,7 @@ Client.createInstance = function() {
 
     var createCommandList = function() {
         var randomData = require('random-fixture-data' ),
-            list = [],
-            request;
+            list = [];
 
         var createRandomUserRecord = function() {
             var obj = {};
@@ -111,25 +95,75 @@ Client.createInstance = function() {
             return obj;
         };
 
-        while (list.length < 4) {
+        var createUserRequest = function() {
             var user = createRandomUserRecord(),
                 key = "TestUser:" + user.id;
 
             list.push( new DatabaseRequest( { cmd:[ "set", key, user ] } ));
-            list.push( new DatabaseRequest( { cmd:[ "get", key ] } ));
-        }
+            list.push( new DatabaseRequest(
+                {
+                    cmd:[ "get", key ],
+                    responseHandler:function(req) {
+                        console.log('handler: ', req);
+                        var resp = req.response,
+                            key = req.cmd[1],
+                            id = key.split(':')[1];
 
-        // test a regular string
-        key = 'PlainStringValue';
-        list.push( new DatabaseRequest( { cmd:[ "set", key, "my test plain string" ] } ));
-        list.push( new DatabaseRequest( { cmd:[ "get", key ] } ));
+                        if (resp.status === 'ok') {
+                            if (resp.value.id === id) {
+                                console.log('user ID is valid: ', id);
+                            } else {
+                                console.log('ERROR! user id does not match: ', resp.value, " != ", id);
+                            }
+                        } else {
+                            console.log('ERROR! message response is not valid: ', resp);
+                        }
+                    }
+                }
+            ));
 
-        request = new DatabaseRequest( { cmd:[ "keys", "TestUser:*" ] } );
-        request.responseHandler = function(msg) {
-            console.dir( msg );
+            list.push( new DatabaseRequest( { cmd:[ "expire", key, 60 ] } ));
         };
 
-        list.push( request );
+        // test a regular string
+        var createPlainStringRequest = function() {
+            var key = 'PlainStringValue';
+            list.push( new DatabaseRequest( { cmd:[ "set", key, "my test plain string" ] } ));
+            list.push( new DatabaseRequest(
+                {
+                    cmd:[ "get", key ],
+                    responseHandler:function(req) {
+                        var resp = req.response;
+                        if (resp.value !== "my test plain string") {
+                            console.log('ERROR! value is incorrect: ', resp.value);
+                        } else {
+                            console.log('key: ', key, ' value is valid: ', resp.value);
+                        }
+                    }
+                }
+            ));
+        };
+
+        var createKeysRequest = function() {
+            var request = new DatabaseRequest( { cmd:[ "keys", "TestUser:*" ] } );
+            request.responseHandler = function(request) {
+                console.dir( request );
+            };
+
+            list.push( request );
+        };
+
+        var createMultipleRequests = function(count, fn) {
+            while( count > 0 ) {
+                fn.call();
+
+                count--;
+            }
+        };
+
+        createMultipleRequests( 10, createUserRequest );
+        createPlainStringRequest();
+        createKeysRequest();
 
         return list;
     };
