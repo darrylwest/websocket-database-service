@@ -24,11 +24,12 @@ var errorHandler = function(err) {
 
 var paths = {
     src: 'lib/*/*.js',
-    tests: 'test/*/*.js'
+    tests: 'test/*/*.js',
+    examples: 'examples/*.js'
 };
 
 gulp.task('jshint', function() {
-    gulp.src([ paths.src, paths.tests ], { read:false } )
+    gulp.src([ paths.src, paths.tests, paths.examples ], { read:false } )
         .pipe( plumber({ errorHandler:errorHandler }) )
         .pipe( jshint() )
         .pipe( jshint.reporter('jshint-stylish') );
