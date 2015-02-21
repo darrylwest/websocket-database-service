@@ -24,19 +24,7 @@ The project includes a "browser" folder with enough example code to access the s
 Here is a short snippet of the browser code:
 
 ~~~
-<!DOCTYPE html>
-<html>
-<head>
-    <title>test database page</title>
-    <script src="browser-messaging-commons.js"></script>
-    <script src="hmac-sha256.js"></script>
-    <script src="DatabaseClient.js"></script>
-    <script>
-        var client;
-
-        window.client = client;
-    </script>
-</head>
+browserify...
 ~~~
 
 
@@ -67,8 +55,82 @@ Here is a sample configuration file.
 
 You would want to have a proxy and preferably HTTPS in front of this but port 29171 works for development.
 
+
+## Database API
+
+The target database is redis (version 2.8.12) so the API supports a sub-set of redis client commands.  There are obvious exclusions including pub/sub, server, etc commands.
+
+It is also possible to swap redis with an alternate by implementing the DAO for the target database.
+
+Here is the complete list of the supported redis commands:
+
+### Keys
+
+~~~
+del key [ key ... ]
+dump key
+exists key
+expire key seconds
+expireat key timestamp
+keys pattern // must be prefixed with a domain, e.g. Users:*
+persist key
+pexpire key milliseconds
+pexpireat key milliseconds-timestamp
+pttl key
+randomkey
+rename key newkey
+nenamenx key newkey
+sort key [BY pattern] [LIMIT offset count]
+ttl key
+type key
+scan cursor [MATH pattern] [COUNT count]
 ~~~
 
+
+### Strings
+~~~
+set key value
+get key
+mset key value [ key value ... ]
+mget key [ key ... ]
+setex key seconds value
+psetex key milliseconds value
+decr key
+incr key
+~~~
+
+### Lists
+
+~~~
+linsert key BEFORE|AFTER pivot value
+llen key
+lpop key
+lpush key value [ value ... ]
+lpushx key value
+lrange key start stop
+lrem key count value
+lset key index value
+ltrim key start stop
+rpop key
+rpoplpush source destination
+rpush key value [ value ... ]
+rpushx key value
+~~~
+
+### Sets
+_coming soon..._
+
+### Sorted Sets
+_coming soon..._
+
+### Connection
+
+Noticeable exclusions are auth, quit and select.  These commands should be done on the server side.
+
+~~~
+echo message
+ping
+~~~
 
 ## Tests
 
