@@ -50,7 +50,7 @@ describe('RedisDao', function() {
                 should.not.exist( err );
                 should.exist( results );
 
-                results.should.equal( 'ok' );
+                results.should.equal( 'OK' );
 
                 done();
             };

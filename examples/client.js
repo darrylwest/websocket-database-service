@@ -46,13 +46,20 @@ var Client = function(options) {
 
             if (request) {
                 request.received = Date.now();
+                request.response = msg;
+
                 log.info( JSON.stringify( request ));
 
                 dash.remove( responseList, function(req) {
                     return req.id === rid;
                 });
 
-                dash.defer( client.nextCommand );
+                dash.defer(function() {
+                    client.nextCommand();
+                    if (typeof request.responseHandler === 'function') {
+                        request.responseHandler( msg );
+                    }
+                });
             }
         });
     };
@@ -73,9 +80,9 @@ var Client = function(options) {
 
             databaseClient.sendDatabaseCommand( command );
         } else {
-            process.nextTick(function() {
+            setTimeout(function() {
                 process.kill( process.pid );
-            });
+            }, 1000);
         }
     };
 };
