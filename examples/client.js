@@ -112,12 +112,17 @@ Client.createInstance = function() {
         };
 
         while (list.length < 4) {
-            var user = createRandomUserRecord();
+            var user = createRandomUserRecord(),
+                key = "TestUser:" + user.id;
 
-            request = new DatabaseRequest( { cmd:[ "set", "TestUser:" + user.id, user ] } );
-
-            list.push( request );
+            list.push( new DatabaseRequest( { cmd:[ "set", key, user ] } ));
+            list.push( new DatabaseRequest( { cmd:[ "get", key ] } ));
         }
+
+        // test a regular string
+        key = 'PlainStringValue';
+        list.push( new DatabaseRequest( { cmd:[ "set", key, "my test plain string" ] } ));
+        list.push( new DatabaseRequest( { cmd:[ "get", key ] } ));
 
         request = new DatabaseRequest( { cmd:[ "keys", "TestUser:*" ] } );
         request.responseHandler = function(msg) {
