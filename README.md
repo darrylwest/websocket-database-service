@@ -78,12 +78,12 @@ expire key seconds
 // expireat key timestamp
 keys pattern // must be prefixed with a domain, e.g. Users:*
 persist key
-pexpire key milliseconds
-pexpireat key milliseconds-timestamp
-pttl key
+// pexpire key milliseconds
+// pexpireat key milliseconds-timestamp
+// pttl key
 randomkey
 rename key newkey
-renamenx key newkey
+// renamenx key newkey
 sort key [BY pattern] [LIMIT offset count]
 ttl key
 type key
@@ -189,6 +189,16 @@ Unit tests include should/specs, jshint and validate-package.  Tests can be run 
 ~~~
 
 ### Integration Tests
+
+_NOTE: running integration tests will flush your redis database, so tests should be done only on a test system were the redis data is not critical..._
+
+All integration tests are in the integration-test folder an run through mocha/chai.  The test files are organized by supported type, e.g., keys, strings, lists, etc.
+
+Run the suite of tests with:
+
+~~~
+	make integration
+~~~
 
 - - -
 <p><small><em>Copyright © 2015, rain city software | Version 0.90.10</em></small></p>
