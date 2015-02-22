@@ -7,6 +7,7 @@
 var dash = require('lodash' ),
     uuid = require('node-uuid' ),
     randomData = require('random-fixture-data' ),
+    DatabaseRequest = require('../../lib/models/DatabaseRequest' ),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
     MockRedisClient = require('mock-redis-client' ),
     data = require('./sample-db.json');
@@ -29,6 +30,7 @@ var TestDataset = function(options) {
     this.createSampleDb = function(callback) {
         var createMarkup,
             createProjects,
+            keys = [],
             runNext;
 
         log.info('copy the sample database to redis client');
@@ -42,7 +44,7 @@ var TestDataset = function(options) {
                 log.info('jobs complete...');
 
                 if (typeof callback === 'function') {
-                    callback();
+                    callback(null, keys);
                 }
             }
         };
@@ -63,6 +65,7 @@ var TestDataset = function(options) {
                 if (markup) {
                     key = 'Markup:' + markup.id;
                     client.set( key, JSON.stringify( markup ), loop );
+                    keys.push( key );
                 } else {
                     runNext( next );
                 }
@@ -87,6 +90,7 @@ var TestDataset = function(options) {
                 if (project) {
                     key = 'Project:' + project.id;
                     client.set( key, project, loop );
+                    keys.push( key );
                 } else {
                     runNext( next );
                 }
@@ -97,6 +101,23 @@ var TestDataset = function(options) {
 
         runNext( [ createProjects, createMarkup ] );
     };
+
+    /**
+     * create a database request with optional responseHandler
+     *
+     * @param cmd
+     * @param fn
+     * @returns {DatabaseRequest}
+     */
+    this.createDatabaseRequest = function(cmd, fn) {
+        var request = new DatabaseRequest( { cmd:cmd } );
+
+        if (typeof fn === 'function') {
+            request.responseHandler = fn;
+        }
+
+        return request;
+    }
 };
 
 module.exports = TestDataset;

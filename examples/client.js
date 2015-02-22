@@ -80,7 +80,6 @@ Client.createInstance = function() {
 
     var logManager = require('simple-node-logger' ).createLogManager(),
         config = require( '../config.json' ),
-        host = 'http://127.0.0.1:29171',
         opts = {};
 
     var createCommandList = function() {
@@ -175,7 +174,7 @@ Client.createInstance = function() {
 
         opts.log = logManager.createLogger('DatabaseClient');
         opts.createLogger = logManager.createLogger;
-        opts.messageURL = [ host, config.hubName ].join('');
+        opts.messageURL = [ config.host, ':', config.port, config.hubName ].join('');
         opts.publicKey = config.appkey;
 
         opts.algorithm = 'sha256';
