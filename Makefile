@@ -16,6 +16,9 @@ test:
 watch:
 	@( gulp watch )
 
+integration:
+	@( node_modules/.bin/mocha --ui bdd --reporter spec integration-test/*.js )
+
 docs:
 	@( gulp jsdoc )
 
@@ -23,5 +26,7 @@ docs:
 .PHONY: npm
 .PHONY: test
 .PHONY: watch
+.PHONY: integration
 .PHONY: build
 .PHONY: docs
+

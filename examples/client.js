@@ -41,9 +41,11 @@ var Client = function(options) {
         databaseClient.on(DatabaseClient.PRIVATE_RESPONSE_RECEIVED, function(request) {
             log.info('response received: ', request);
 
+            var response = request.response;
+
             // validate the response
 
-            if (request.response.status !== 'ok') {
+            if (response.status !== 'ok') {
                 log.error('error in response: ', request.response);
             }
 
@@ -72,7 +74,7 @@ var Client = function(options) {
     };
 };
 
-// simulates factory configuration
+// simulates factory configuration + test commands
 Client.createInstance = function() {
     'use strict';
 
