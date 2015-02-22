@@ -1,17 +1,19 @@
 /**
  * @class KeyTests
  *
- * @author: darryl.west@roundpeg.com
+ * @author: darryl.west@raincitysoftware.com
  * @created: 2/21/15 4:53 PM
  */
 var should = require('chai').should(),
     dash = require('lodash'),
-    uuid = require('node-uuid' );
+    uuid = require('node-uuid' ),
+    db = require('../test/fixtures/sample-db.json');
 
 describe('KeyTests', function() {
     beforeEach(function(done) {
 
         // TODO : with direct access to the database, flush then reload for each test
+
 
         done();
     });
@@ -55,7 +57,7 @@ describe('KeyTests', function() {
 
     describe('ttl', function() {
         it('should return the ttl for a known expiring key');
-        it('should return -1 for a non-expireing key');
+        it('should return -1 for a non-expiring key');
     });
 
     describe('type', function() {
