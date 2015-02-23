@@ -13,7 +13,7 @@ var should = require('chai').should(),
     DatabaseClient = require('../lib/client/DatabaseClient' ),
     Dataset = require( '../test/fixtures/TestDataset' );
 
-describe('KeyTests', function() {
+describe('TestSuite', function() {
     var dataset = new Dataset( { client:redis.createClient() } ),
         log = Logger.createSimpleFileLogger('integration-test/test.log'),
         databaseClient,
@@ -177,7 +177,15 @@ describe('KeyTests', function() {
         });
 
         describe('randomKey', function() {
-            it('should return a known key from a list of known keys');
+            it('should return a known key from a list of known keys', function(done) {
+                var validate = function(key) {
+                        keys.indexOf( key ).should.be.above( -1 );
+                    },
+                    handler = createStandardHandler( validate, done ),
+                    request = dataset.createDatabaseRequest( 'randomkey', handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('rename', function() {
