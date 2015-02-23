@@ -72,7 +72,6 @@ Here is the complete list of the supported redis commands:
 
 ~~~
 del key [ key ... ]
-dump key
 exists key
 expire key seconds
 // expireat key timestamp
@@ -96,8 +95,8 @@ set key value // value is an object
 get key // if found, the return is parsed and returned as an object
 mset key value [ key value ... ]
 mget key [ key ... ]
-setex key seconds value
-psetex key milliseconds value
+// setex key seconds value
+// psetex key milliseconds value
 decr key
 incr key
 ~~~
@@ -192,7 +191,7 @@ Unit tests include should/specs, jshint and validate-package.  Tests can be run 
 
 _NOTE: running integration tests will flush your redis database, so tests should be done only on a test system were the redis data is not critical..._
 
-All integration tests are in the integration-test folder an run through mocha/chai.  The test files are organized by supported type, e.g., keys, strings, lists, etc.
+All integration tests are in the integration-test folder an run through mocha/chai.  The tests are organized by supported type, e.g., keys, strings, lists, etc.
 
 Run the suite of tests with:
 
