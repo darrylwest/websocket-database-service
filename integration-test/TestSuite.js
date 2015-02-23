@@ -198,7 +198,14 @@ describe('TestSuite', function() {
         });
 
         describe('type', function() {
-            it('should return the type for a known key');
+            it('should return the type for a known key', function(done) {
+                var key = 'Markup:d0a9025ab6c311e49305cb3bb7ef8a18',
+                    handler = createStandardHandler( 'string', done ),
+                    request = dataset.createDatabaseRequest([ 'type', key ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
+
             // TODO : test for all supported types
         });
 
