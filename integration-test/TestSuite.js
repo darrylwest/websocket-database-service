@@ -63,12 +63,14 @@ describe('KeyTests', function() {
         should.exist( results.response.value );
     };
 
-    var createStandardHandler = function(value, next) {
+    var createStandardHandler = function(validate, next) {
         var handler = function(results) {
             validateResponse( results );
 
-            if (value) {
-                results.response.value.should.equal( value );
+            if (typeof validate === 'function') {
+                validate( results.response.value );
+            } else if (validate !== null) {
+                results.response.value.should.equal( validate );
             }
 
             if (typeof next === 'function') {
@@ -80,8 +82,6 @@ describe('KeyTests', function() {
     };
 
     describe('KeyTests', function() {
-
-
         describe('del', function() {
             it('should delete a known record by key', function(done) {
                 var key = keys[ dash.random( keys.length ) ],
@@ -100,18 +100,33 @@ describe('KeyTests', function() {
             });
         });
 
-        describe('dump', function() {
-            it('should dump a known key with predictable results');
-            it('should not dump an unknown key');
-        });
-
         describe('exists', function() {
-            it('should return true when checking a known key');
-            it('should return false when checking an unknown key');
+            it('should return true when checking a known key', function(done) {
+                var key = keys[ dash.random( keys.length ) ],
+                    handler = createStandardHandler( 1, done ),
+                    request = dataset.createDatabaseRequest([ 'exists', key ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
+
+            it('should return false when checking an unknown key', function(done) {
+                var key = 'ImpossibleKey:' + uuid.v4(),
+                    handler = createStandardHandler( 0, done ),
+                    request = dataset.createDatabaseRequest([ 'exists', key ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('expire', function() {
-            it('should set a ttl for a known key');
+            it('should set a ttl for a known key', function(done) {
+                var key = keys[ dash.random( keys.length ) ],
+                    handler = createStandardHandler( 1, done ),
+                    request = dataset.createDatabaseRequest([ 'expire', key, 120 ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
+
             // TODO what about error handling for a bad command, like if the seconds are 'flarb'
         });
 
