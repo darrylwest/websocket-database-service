@@ -45,8 +45,12 @@ describe('KeyTests', function() {
         });
     });
 
-    var validateResponse = function(results) {
+    var validateResponse = function(results, status) {
         log.info( "del results: ", results );
+
+        if (!status) {
+            status = 'ok';
+        }
 
         should.exist( results );
         should.exist( results.timeSent );
@@ -56,11 +60,18 @@ describe('KeyTests', function() {
         should.exist( results.messageReceived.message );
         should.exist( results.messageReceived.message.rid );
         should.exist( results.messageReceived.message.status );
-        should.exist( results.messageReceived.message.value );
+
         should.exist( results.response );
 
-        results.response.status.should.equal( 'ok' );
-        should.exist( results.response.value );
+        results.response.status.should.equal( status );
+
+        if (status === 'ok') {
+            should.exist( results.messageReceived.message.value );
+            should.exist( results.response.value );
+        } else {
+            should.exist( results.messageReceived.message.reason );
+            should.exist( results.response.reason );
+        }
     };
 
     var createStandardHandler = function(validate, next) {
@@ -131,8 +142,34 @@ describe('KeyTests', function() {
         });
 
         describe('keys', function() {
-            it('should return all the keys for a given domain set');
-            it('should return an error if there is no domain');
+            it('should return all the keys for a given domain set', function(done) {
+                var key = 'Markup:*',
+                    validate = function(list) {
+                        list.length.should.equal( 7 );
+
+                        // insure that all the returned keys are actually in the known list
+                        list.forEach(function(key) {
+                            keys.indexOf( key ).should.be.above( -1 );
+                        });
+                    },
+                    handler = createStandardHandler( validate, done ),
+                    request = dataset.createDatabaseRequest([ 'keys', key ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+
+            });
+
+            it('should return an error if there is no domain', function(done) {
+                var key = '*',
+                    handler = function(results) {
+                        validateResponse( results, 'failed' );
+
+                        done();
+                    },
+                    request = dataset.createDatabaseRequest([ 'keys', key ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('persist', function() {
