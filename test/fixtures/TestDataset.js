@@ -51,11 +51,27 @@ var TestDataset = function(options) {
         };
 
         createLists = function(next) {
-            var list = data.markupList.map(function(markup) {
+            var list = data.actionList.map(function(markup) {
                     return markup;
-                });
+                }),
+                key = 'ActionList:a2517228b32311e4ae6b3b75dcd4542e';
 
             log.info('create a list of objects');
+
+            var loop = function(err) {
+                if (err) throw err;
+
+                var action = list.shift();
+
+                if (action) {
+                    client.lpush( key, JSON.stringify( action ), loop );
+                } else {
+                    runNext( next );
+                }
+            };
+
+            // first, clear the list...
+            client.del( key, loop );
         };
 
         createMarkup = function(next) {
@@ -108,7 +124,7 @@ var TestDataset = function(options) {
             loop();
         };
 
-        runNext( [ createProjects, createMarkup ] );
+        runNext( [ createProjects, createMarkup, createLists ] );
     };
 
     /**
