@@ -288,6 +288,32 @@ describe('TestSuite', function() {
             it('should remove all elements equal to a known value');
         });
 
+        describe('lset', function() {
+            it('should replace a known value at a specific index location');
+            // TODO other tests...
+        });
+
+        describe('ltrim', function() {
+            it('should remove a subset of items from a known list');
+        });
+
+        describe('rpop', function() {
+            it('should pop an item off the right side of a known list');
+        });
+
+        describe('rpoplpush', function() {
+            it('should pop an item of a known list and push it to a new list');
+        });
+
+        describe('rpush', function() {
+            it('should push a value to the right side of a list');
+            it('should push multiple values to the right side of a list');
+        });
+
+        describe('rpushx', function() {
+            it('should push a value to a known list');
+            it('should not push a value to an unknown list');
+        });
     });
 
 });
