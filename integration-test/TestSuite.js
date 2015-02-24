@@ -248,15 +248,44 @@ describe('TestSuite', function() {
 
     describe('ListTests', function() {
         describe('linsert', function() {
-            it('should insert a new list item');
+            it('should insert a new list item before a known item');
+            it('should insert a new list item after a known item');
+        });
+
+        describe('lindex', function() {
+            it('should return a list item with a known positive index');
+            it('should return a list item with a known negative index');
+            it('should return null with an index greater than the list length');
         });
 
         describe('llen', function() {
             it('should return the length of a know list');
+            it('should return zero for an unknown list');
         });
 
         describe('lpop', function() {
             it('should pop an item off the left side of a known list');
+        });
+
+        describe('lpush', function() {
+            it('should push a new item on the left side of a list');
+            it('should push multiple items to the left side of a list');
+        });
+
+        describe('lpushx', function() {
+            it('should push a value to a known list');
+            it('should not push a value to an unknown list');
+        });
+
+        describe('lrange', function() {
+            it('should return a complete list if items given 0 and -1 start/stop offsets');
+            it('should return a null list given start/stop offsets out of the list range');
+        });
+
+        describe('lrem', function() {
+            it('should remove elements equal to value moving from head to tail');
+            it('should remove elements equal to value moving from tail to head');
+            it('should remove all elements equal to a known value');
         });
 
     });

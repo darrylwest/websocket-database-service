@@ -30,17 +30,18 @@ var TestDataset = function(options) {
     this.createSampleDb = function(callback) {
         var createMarkup,
             createProjects,
-            createLists,
+            createActionList,
+            createKeyList,
             keys = [],
             runNext;
 
         log.info('copy the sample database to redis client');
 
-        runNext = function(next) {
-            var job = next.shift();
+        runNext = function(jobs) {
+            var job = jobs.shift();
 
             if (job) {
-                job( next );
+                job( jobs );
             } else {
                 log.info('jobs complete...');
 
@@ -50,7 +51,25 @@ var TestDataset = function(options) {
             }
         };
 
-        createLists = function(next) {
+        createKeyList = function(jobs) {
+            log.info('create a list of keys');
+            var count = 25,
+                key = 'simpleKeys';
+
+            var loop = function() {
+                count--;
+                if (count < 0) {
+                    runNext( jobs );
+                } else {
+                    client.rpush( key, uuid.v4(), loop );
+                }
+            };
+
+            // first, clear the list...
+            client.del( key, loop );
+        };
+
+        createActionList = function(jobs) {
             var list = data.actionList.map(function(markup) {
                     return markup;
                 }),
@@ -66,7 +85,7 @@ var TestDataset = function(options) {
                 if (action) {
                     client.lpush( key, JSON.stringify( action ), loop );
                 } else {
-                    runNext( next );
+                    runNext( jobs );
                 }
             };
 
@@ -74,7 +93,7 @@ var TestDataset = function(options) {
             client.del( key, loop );
         };
 
-        createMarkup = function(next) {
+        createMarkup = function(jobs) {
             var list = data.markupList.map(function(markup) {
                     return markup;
                 });
@@ -92,14 +111,14 @@ var TestDataset = function(options) {
                     client.set( key, JSON.stringify( markup ), loop );
                     keys.push( key );
                 } else {
-                    runNext( next );
+                    runNext( jobs );
                 }
             };
 
             loop();
         };
 
-        createProjects = function(next) {
+        createProjects = function(jobs) {
             var projects = data.projects.map(function(project) {
                     return project;
                 });
@@ -117,14 +136,14 @@ var TestDataset = function(options) {
                     client.set( key, project, loop );
                     keys.push( key );
                 } else {
-                    runNext( next );
+                    runNext( jobs );
                 }
             };
 
             loop();
         };
 
-        runNext( [ createProjects, createMarkup, createLists ] );
+        runNext( [ createProjects, createMarkup, createActionList, createKeyList ] );
     };
 
     /**
