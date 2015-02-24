@@ -228,12 +228,37 @@ describe('TestSuite', function() {
 
         describe('mset', function() {
             it('should set multiple complex values');
-            it('should set mulptiple plain text values');
+            it('should set multiple plain text values');
         });
 
         describe('mget', function() {
             it('should return multiple values from multiple keys');
         });
+
+        describe('decr', function() {
+            it('should decrement a new key');
+            it('should decrement a known key');
+        });
+
+        describe('incr', function() {
+            it('should increment a new key');
+            it('should increment a known key');
+        });
+    });
+
+    describe('ListTests', function() {
+        describe('linsert', function() {
+            it('should insert a new list item');
+        });
+
+        describe('llen', function() {
+            it('should return the length of a know list');
+        });
+
+        describe('lpop', function() {
+            it('should pop an item off the left side of a known list');
+        });
+
     });
 
 });

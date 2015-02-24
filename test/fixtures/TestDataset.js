@@ -30,6 +30,7 @@ var TestDataset = function(options) {
     this.createSampleDb = function(callback) {
         var createMarkup,
             createProjects,
+            createLists,
             keys = [],
             runNext;
 
@@ -47,6 +48,14 @@ var TestDataset = function(options) {
                     callback(null, keys);
                 }
             }
+        };
+
+        createLists = function(next) {
+            var list = data.markupList.map(function(markup) {
+                    return markup;
+                });
+
+            log.info('create a list of objects');
         };
 
         createMarkup = function(next) {
