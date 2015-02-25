@@ -105,6 +105,7 @@ incr key
 
 ~~~
 linsert key BEFORE|AFTER pivot value
+lindex key index
 llen key
 lpop key
 lpush key value [ value ... ]
@@ -140,6 +141,7 @@ A very small subset of server commands are supported...
 
 ~~~
 dbsize
+ping
 time
 ~~~
 
