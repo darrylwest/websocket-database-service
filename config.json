@@ -2,7 +2,6 @@
     "host":"http://127.0.0.1",
     "port":29171,
     "hubName":"/DatabaseMessageHub",
-    "channels":[ "/database" ],
     "appkey":"21c47d42-b190-11e4-b245-6bec9d4533f0",
     "redis":{
         "host":"angelfish.redistogo.com",

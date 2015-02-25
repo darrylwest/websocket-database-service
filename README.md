@@ -7,15 +7,23 @@ A database service accessed through a websocket API to support key/value pairs, 
 
 ## Introduction
 
-The Websocket Database Service...
+The Websocket Database Service gives a client browser the ability to update a remote database in real time over websockets.  After the client establishes a connection to the public database service, it establishes a private connection to send commands and receive responses directly the the remote database over a dedicated channel.
+
+The initial implementation for the backend serivce supports a subset of redis commands through the specific data access object RedisDAO.  It's possible to use this technology to talk to other databases, NoSQL as well as traditional SQL by implementing an alternate DAO.  Command messages are sent and recieved by serializing complex objects using JSON as handled by the DAO and messaging system.
 
 ## Installation
+
+A minimum installation requires a server.  Typically this server talks directly the the target database on the same server.  Alternatively a database service like redis-to-go or other cloud service could host the database.
+
+A production environment would probably use a proxy.  To route messages through port 80 or 443 for secure connections.  There is an example proxy configuration for haproxy in the examples folder.
 
 ### Server
 
 ~~~
 npm install websocket-database-service --save
 ~~~
+
+Alternatively you can git/clone the project and run as a stand-alone service.
 
 ### Client/Browser
 
@@ -26,7 +34,6 @@ Here is a short snippet of the browser code:
 ~~~
 browserify...
 ~~~
-
 
 ### Server
 
@@ -42,18 +49,23 @@ service.start();
 
 ## Configuration
 
-Here is a sample configuration file.
+Here is a sample server configuration file.
 
 ~~~
 {
-    "port":29171,
-    "hubName":"/DatabaseMessageHub",
-    "channels":[ "/database" ],
-    "appkey":"b55d91a2-a68f-48a1-8f4b-c4dfc65d60bb"
+	"host":"http://127.0.0.1",
+   "port":29171,
+   "hubName":"/DatabaseMessageHub",
+   "appkey":"<your-application-key>",
+   "logging":{
+   		"logDirectory":"HOME/logs",
+       "fileNamePattern":"ws-db-<DATE>.log",
+       "dateFormat":"YYYY.MM.DD"
+   }
 }
 ~~~
 
-You would want to have a proxy and preferably HTTPS in front of this but port 29171 works for development.
+You would want to have a proxy and preferably HTTPS in front of this but port 29171 works for development.  Logging here is configured for rolling logs in the applications' ~/logs/ folder.  Any long system that supports debug, info, warn and error can be used (log4j, winston) but the supplied logging framework is [simple-node-logger](http://github/darrylwest/simple-node-logger).
 
 ## Database API
 
