@@ -13,7 +13,7 @@ The initial implementation for the backend serivce supports a subset of redis co
 
 ## Installation
 
-A minimum installation requires a server.  Typically this server talks directly the the target database on the same server.  Alternatively a database service like redis-to-go or other cloud service could host the database.
+A minimum installation requires a server.  Typically this server talks directly the the target database on the same server.  Alternatively a database service like [redis-to-go](http://redistogo.com/), [redislabs](https://redislabs.com/) or other cloud service could host the database.
 
 A production environment would probably use a proxy.  To route messages through port 80 or 443 for secure connections.  There is an example proxy configuration for haproxy in the examples folder.
 
