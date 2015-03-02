@@ -189,7 +189,14 @@ describe('TestSuite', function() {
         });
 
         describe('rename', function() {
-            it('should rename a known key');
+            it('should rename a known key', function(done) {
+                var key = keys[ dash.random( keys.length ) ],
+                    handler = createStandardHandler( 'OK', done ),
+                    newKey = 'newkeyname',
+                    request = dataset.createDatabaseRequest([ 'rename', key, newKey ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('ttl', function() {
