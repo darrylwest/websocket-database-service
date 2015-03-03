@@ -133,7 +133,7 @@ var TestDataset = function(options) {
 
                 if (project) {
                     key = 'Project:' + project.id;
-                    client.set( key, project, loop );
+                    client.set( key, JSON.stringify( project ), loop );
                     keys.push( key );
                 } else {
                     runNext( jobs );

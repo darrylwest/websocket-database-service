@@ -179,7 +179,7 @@ describe('TestSuite', function() {
         describe('randomKey', function() {
             it('should return a known key from a list of known keys', function(done) {
                 var validate = function(key) {
-                        keys.indexOf( key ).should.be.above( -1 );
+                        should.exist( key );
                     },
                     handler = createStandardHandler( validate, done ),
                     request = dataset.createDatabaseRequest( 'randomkey', handler);
