@@ -207,7 +207,7 @@ _NOTE: running integration tests will flush your redis database, so tests should
 
 All integration tests are in the integration-test folder an run through mocha/chai.  The tests are organized by supported type, e.g., keys, strings, lists, etc.
 
-Run the suite of tests with:
+First start the service with ./bin/start.js, then run the suite of tests with:
 
 ~~~
 	make integration
