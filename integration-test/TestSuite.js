@@ -173,7 +173,19 @@ describe('TestSuite', function() {
         });
 
         describe('persist', function() {
-            it('should remove the ttl for a known key');
+            it('should remove the ttl for a known key', function(done) {
+                var key = keys[ dash.random( keys.length ) ],
+                    nextAction = function() {
+                        var secondHandler = createStandardHandler( 1, done ),
+                            secondRequest = dataset.createDatabaseRequest([ 'persist', key ], secondHandler);
+
+                        databaseClient.sendDatabaseCommand( secondRequest );
+                    },
+                    handler = createStandardHandler( 1, nextAction ),
+                    request = dataset.createDatabaseRequest([ 'expire', key, 120 ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('randomKey', function() {
