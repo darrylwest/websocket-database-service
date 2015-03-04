@@ -212,8 +212,29 @@ describe('TestSuite', function() {
         });
 
         describe('ttl', function() {
-            it('should return the ttl for a known expiring key');
-            it('should return -1 for a non-expiring key');
+            it('should return the ttl for a known expiring key', function(done) {
+                var key = keys[ dash.random( keys.length ) ],
+                    nextAction = function() {
+                        var validate = function( output ) {
+                            output.should.be.above( -1 );
+                        };
+                        var secondHandler = createStandardHandler( validate, done ),
+                            secondRequest = dataset.createDatabaseRequest([ 'ttl', key ], secondHandler);
+
+                        databaseClient.sendDatabaseCommand( secondRequest );
+                    },
+                    handler = createStandardHandler( 1, nextAction ),
+                    request = dataset.createDatabaseRequest([ 'expire', key, 120 ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
+            it('should return -1 for a non-expiring key', function(done) {
+                var key = keys[ dash.random( keys.length ) ],
+                    handler = createStandardHandler( -1, done ),
+                    request = dataset.createDatabaseRequest([ 'ttl', key ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('type', function() {
