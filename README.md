@@ -27,12 +27,8 @@ Alternatively you can git/clone the project and run as a stand-alone service.
 
 ### Client/Browser
 
-The project includes a "browser" folder with enough example code to access the service.
-
-Here is a short snippet of the browser code:
-
 ~~~
-browserify...
+browserify bundle...
 ~~~
 
 ### Server
@@ -53,12 +49,12 @@ Here is a sample server configuration file.
 
 ~~~
 {
-	"host":"http://127.0.0.1",
+   "host":"http://127.0.0.1",
    "port":29171,
    "hubName":"/DatabaseMessageHub",
    "appkey":"<your-application-key>",
    "logging":{
-   		"logDirectory":"HOME/logs",
+	   "logDirectory":"HOME/logs",
        "fileNamePattern":"ws-db-<DATE>.log",
        "dateFormat":"YYYY.MM.DD"
    }
