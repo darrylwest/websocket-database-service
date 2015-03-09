@@ -270,6 +270,7 @@ describe('TestSuite', function() {
 
         describe('get', function() {
             it('should return a known complex domain object by key');
+
             it('should return a known plain text value by key', function(done) {
                 var key = keys[ dash.random( keys.length ) ],
                     nextAction = function() {
@@ -287,11 +288,38 @@ describe('TestSuite', function() {
 
         describe('mset', function() {
             it('should set multiple complex values');
-            it('should set multiple plain text values');
+
+            it('should set multiple plain text values', function(done) {
+                var key1 = keys[ dash.random( keys.length ) ],
+                    key2 = keys[ dash.random( keys.length ) ],
+                    handler = createStandardHandler( 'OK', done ),
+                    request = dataset.createDatabaseRequest([ 'mset', key1, 'plaintextvalue', key2, 'secondvalue' ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('mget', function() {
-            it('should return multiple values from multiple keys');
+            it('should return multiple values from multiple keys', function(done) {
+                var key1 = keys[ dash.random( keys.length ) ],
+                    key2 = keys[ dash.random( keys.length ) ],
+                    validate = function(list) {
+                        list[0].should.equal( 'plaintextvalue' );
+
+                        list[1].should.equal( 'secondvalue' );
+                    },
+                    nextAction = function() {
+                        var secondHandler = createStandardHandler( validate, done ),
+                            secondRequest = dataset.createDatabaseRequest([ 'mget', key1, key2 ], secondHandler);
+
+                        databaseClient.sendDatabaseCommand( secondRequest );
+                    },
+
+                    handler = createStandardHandler( 'OK', nextAction ),
+                    request = dataset.createDatabaseRequest([ 'mset', key1, 'plaintextvalue', key2, 'secondvalue' ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('decr', function() {
