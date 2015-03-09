@@ -258,7 +258,7 @@ describe('TestSuite', function() {
     describe('StringTests', function() {
         describe('set', function() {
             it('should save a known complex domain object by key');
-            
+
             it('should save a known plain text value by key', function(done) {
                 var key = keys[ dash.random( keys.length ) ],
                     handler = createStandardHandler( 'OK', done ),
@@ -270,7 +270,19 @@ describe('TestSuite', function() {
 
         describe('get', function() {
             it('should return a known complex domain object by key');
-            it('should return a known plain text value by key');
+            it('should return a known plain text value by key', function(done) {
+                var key = keys[ dash.random( keys.length ) ],
+                    nextAction = function() {
+                        var secondHandler = createStandardHandler( 'plaintextvalue', done ),
+                            secondRequest = dataset.createDatabaseRequest([ 'get', key ], secondHandler);
+
+                        databaseClient.sendDatabaseCommand( secondRequest );
+                    },
+                    handler = createStandardHandler( 'OK', nextAction ),
+                    request = dataset.createDatabaseRequest([ 'set', key, 'plaintextvalue' ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('mset', function() {
