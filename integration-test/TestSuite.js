@@ -323,8 +323,26 @@ describe('TestSuite', function() {
         });
 
         describe('decr', function() {
-            it('should decrement a new key');
-            it('should decrement a known key');
+            it('should decrement a new key', function(done) {
+                var key = 'KeyForDecrTest:' + uuid.v4(),
+                    handler = createStandardHandler( -1, done ),
+                    request = dataset.createDatabaseRequest([ 'decr', key ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
+            it('should decrement a known key', function(done) {
+                var key = 'newKeyContainingInt',
+                    nextAction = function() {
+                        var secondHandler = createStandardHandler( 1233, done ),
+                            secondRequest = dataset.createDatabaseRequest([ 'decr', key ], secondHandler);
+
+                        databaseClient.sendDatabaseCommand( secondRequest );
+                    },
+                    handler = createStandardHandler( 'OK', nextAction ),
+                    request = dataset.createDatabaseRequest([ 'set', key, 1234 ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('incr', function() {
