@@ -258,7 +258,14 @@ describe('TestSuite', function() {
     describe('StringTests', function() {
         describe('set', function() {
             it('should save a known complex domain object by key');
-            it('should save a known plain text value by key');
+            
+            it('should save a known plain text value by key', function(done) {
+                var key = keys[ dash.random( keys.length ) ],
+                    handler = createStandardHandler( 'OK', done ),
+                    request = dataset.createDatabaseRequest([ 'set', key, 'plaintextvalue' ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
 
         describe('get', function() {
