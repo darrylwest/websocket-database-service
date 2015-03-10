@@ -346,8 +346,26 @@ describe('TestSuite', function() {
         });
 
         describe('incr', function() {
-            it('should increment a new key');
-            it('should increment a known key');
+            it('should increment a new key', function(done) {
+                var key = 'KeyForIncrTest:' + uuid.v4(),
+                    handler = createStandardHandler( 1, done ),
+                    request = dataset.createDatabaseRequest([ 'incr', key ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
+            it('should increment a known key', function(done) {
+                var key = 'KeyContainingInt',
+                    nextAction = function() {
+                        var secondHandler = createStandardHandler( 1235, done ),
+                            secondRequest = dataset.createDatabaseRequest([ 'incr', key ], secondHandler);
+
+                        databaseClient.sendDatabaseCommand( secondRequest );
+                    },
+                    handler = createStandardHandler( 'OK', nextAction ),
+                    request = dataset.createDatabaseRequest([ 'set', key, 1234 ], handler);
+
+                databaseClient.sendDatabaseCommand( request );
+            });
         });
     });
 
