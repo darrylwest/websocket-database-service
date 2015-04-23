@@ -22,7 +22,7 @@
   "dependencies": {
     "background-service-runner": "^0.90.23",
     "faye": "^1.1.0",
-    "lodash": "^3.3.1",
+    "lodash": "^3.7.0",
     "moment": "^2.8.3",
     "node-messaging-commons": "^0.90.40",
     "node-uuid": "^1.4.1",
