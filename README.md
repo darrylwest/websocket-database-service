@@ -9,7 +9,16 @@ A database service accessed through a websocket API to support key/value pairs, 
 
 The Websocket Database Service gives a client browser the ability to update a remote database in real time over websockets.  After the client establishes a connection to the public database service, it establishes a private connection to send commands and receive responses directly the the remote database over a dedicated channel.
 
-The initial implementation for the backend serivce supports a subset of redis commands through the specific data access object RedisDAO.  It's possible to use this technology to talk to other databases, NoSQL as well as traditional SQL by implementing an alternate DAO.  Command messages are sent and recieved by serializing complex objects using JSON as handled by the DAO and messaging system.
+Each backend service supports a set of commands through the specific data access object (DAO).  Currently we support the following:
+
+1. Redis
+2. LokiJS
+.. mongo
+.. leveldb
+.. couchdb
+.. mysql
+.. sqlserver
+.. oracle
 
 ## Installation
 
