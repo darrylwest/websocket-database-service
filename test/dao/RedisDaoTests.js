@@ -1,5 +1,5 @@
 /**
- *
+ * @class RedisDao
  *
  * @author: darryl.west@roundpeg.com
  * @created: 2/20/15 2:57 PM
@@ -139,7 +139,7 @@ describe('RedisDao', function() {
                 done();
             };
 
-            dao.execute( [ 'expire', key, 30 ], callback );
+            dao.execute( [ 'expire', key, 3 ], callback );
         });
     });
 });
