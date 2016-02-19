@@ -23,6 +23,7 @@
     "background-service-runner": "^0.90.23",
     "faye": "^1.1.0",
     "lodash": "^3.7.0",
+    "lokijs": "^1.2.5",
     "moment": "^2.8.3",
     "node-messaging-commons": "^0.90.40",
     "node-uuid": "^1.4.1",
@@ -48,20 +49,20 @@
     "vinyl-fs": "^0.3.8"
   },
   "author": {
-    "name":"darryl west",
-    "email":"darryl.west@raincitysoftware.com",
-    "url":"http://blog.raincitysoftware.com"
+    "name": "darryl west",
+    "email": "darryl.west@raincitysoftware.com",
+    "url": "http://blog.raincitysoftware.com"
   },
-  "contributors":[
+  "contributors": [
     {
-        "name":"darryl west",
-        "email":"darryl.west@raincitysoftware.com",
-        "url":"http://blog.raincitysoftware.com"
+      "name": "darryl west",
+      "email": "darryl.west@raincitysoftware.com",
+      "url": "http://blog.raincitysoftware.com"
     },
     {
-        "name":"James Conroy",
-        "email":"james.conroy@roundpoint.com",
-        "url":"https://github.com/jamesconroyuk"
+      "name": "James Conroy",
+      "email": "james.conroy@roundpoint.com",
+      "url": "https://github.com/jamesconroyuk"
     }
   ],
   "license": "Apache 2.0",

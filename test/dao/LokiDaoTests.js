@@ -17,6 +17,7 @@ describe('LokiDao', function() {
         var opts = {};
 
         opts.log = MockLogger.createLogger('LokiDao');
+        opts.dbname = 'testdb';
 
         return opts;
     };
